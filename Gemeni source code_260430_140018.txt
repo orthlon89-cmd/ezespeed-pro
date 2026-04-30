@@ -1,0 +1,217 @@
+```react
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  Zap, Battery, Wrench, Search, Crown, X, Loader2, 
+  CheckCircle2, Activity, ChevronRight, AlertTriangle, 
+  Sparkles, Shield, Copy, RotateCcw, Crosshair, Cpu, 
+  CircuitBoard, Gauge, Camera, Scan, Info
+} from 'lucide-react';
+
+const App = () => {
+  const [view, setView] = useState('landing'); // landing, scanning, results
+  const [scanProgress, setScanProgress] = useState(0);
+  const [scanStatus, setScanStatus] = useState("Initializing Optical Sensors...");
+  const [identifiedModel, setIdentifiedModel] = useState(null);
+
+  // Mock Identity Logic
+  const handleIdentify = () => {
+    setView('scanning');
+    setScanProgress(0);
+    
+    const steps = [
+      { p: 10, s: "Calibrating vision sensors..." },
+      { p: 30, s: "Analyzing frame geometry..." },
+      { p: 50, s: "Matching controller signature..." },
+      { p: 75, s: "Cross-referencing database..." },
+      { p: 90, s: "Verifying safety envelope..." },
+      { p: 100, s: "Identity Confirmed." }
+    ];
+
+    steps.forEach((step, index) => {
+      setTimeout(() => {
+        setScanProgress(step.p);
+        setScanStatus(step.s);
+        if (step.p === 100) {
+          setTimeout(() => {
+            setIdentifiedModel({
+              name: "Kugoo Kirin G3 Pro",
+              confidence: "98.4%",
+              specs: { speed: "65 km/h", motor: "Dual 1200W", battery: "52V 23Ah" },
+              status: "Modifiable"
+            });
+            setView('results');
+          }, 800);
+        }
+      }, (index + 1) * 800);
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-black text-slate-100 font-sans selection:bg-cyan-500/30 overflow-x-hidden">
+      {/* ─── HEADER ─── */}
+      <header className="p-6 flex justify-between items-center border-b border-white/5 bg-black/50 backdrop-blur-md sticky top-0 z-50">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.5)]">
+            <Zap size={18} className="text-black fill-current" />
+          </div>
+          <span className="text-xl font-bold tracking-tighter uppercase">EzeSpeed<span className="text-cyan-400">Pro</span></span>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-[10px] font-mono text-cyan-400 animate-pulse">
+            SYSTEM: ONLINE
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-md mx-auto p-6 space-y-8 pb-24">
+        
+        {/* ─── LANDING VIEW ─── */}
+        {view === 'landing' && (
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="text-center space-y-2">
+              <h1 className="text-3xl font-black tracking-tight leading-none uppercase italic text-transparent bg-clip-text bg-gradient-to-br from-white to-slate-500">
+                Unlock Your Machine
+              </h1>
+              <p className="text-slate-400 text-sm font-medium">Identify, Verify, and Tune in Seconds.</p>
+            </div>
+
+            <div 
+              onClick={handleIdentify}
+              className="group relative cursor-pointer aspect-square rounded-3xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-4 bg-white/5 hover:bg-white/10 hover:border-cyan-500/50 transition-all duration-300"
+            >
+              <div className="absolute inset-0 overflow-hidden rounded-3xl opacity-20 pointer-events-none">
+                 <div className="absolute top-0 left-0 w-full h-[2px] bg-cyan-400 animate-[scan_3s_ease-in-out_infinite]" />
+              </div>
+              
+              <div className="w-20 h-20 rounded-full bg-cyan-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-[0_0_30px_rgba(6,182,212,0.2)]">
+                <Camera size={36} className="text-cyan-400" />
+              </div>
+              <div className="text-center">
+                <span className="block text-lg font-bold text-white uppercase tracking-widest">Identify Vehicle</span>
+                <span className="text-xs text-cyan-400/70 font-mono tracking-tight">AI RECOGNITION ENGINE V7.4</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                <Shield size={20} className="text-green-400" />
+                <h3 className="text-xs font-bold uppercase text-slate-300">Safe Tuning</h3>
+                <p className="text-[10px] text-slate-500">Real-time safety envelope checks on all modifications.</p>
+              </div>
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                <Cpu size={20} className="text-purple-400" />
+                <h3 className="text-xs font-bold uppercase text-slate-300">Model DB</h3>
+                <p className="text-[10px] text-slate-500">Support for 500+ controllers and e-mobility brands.</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ─── SCANNING VIEW ─── */}
+        {view === 'scanning' && (
+          <div className="space-y-12 py-10 animate-in fade-in duration-500">
+            <div className="relative w-48 h-48 mx-auto">
+              {/* Spinning Orbits */}
+              <div className="absolute inset-0 border-4 border-cyan-500/20 rounded-full animate-[spin_4s_linear_infinite]" />
+              <div className="absolute inset-4 border-2 border-t-cyan-400 border-transparent rounded-full animate-spin" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Scan size={48} className="text-cyan-400 animate-pulse" />
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex justify-between text-[10px] font-mono text-cyan-400 px-2">
+                <span>{scanStatus}</span>
+                <span>{scanProgress}%</span>
+              </div>
+              <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-cyan-400 transition-all duration-500 ease-out shadow-[0_0_10px_#22d3ee]" 
+                  style={{ width: `${scanProgress}%` }}
+                />
+              </div>
+              <p className="text-center text-[11px] text-slate-500 uppercase tracking-widest font-bold italic">
+                DO NOT MOVE DEVICE
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* ─── RESULTS VIEW ─── */}
+        {view === 'results' && identifiedModel && (
+          <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
+             <div className="p-6 rounded-3xl bg-gradient-to-br from-cyan-500/20 to-blue-500/10 border border-cyan-500/30 relative overflow-hidden">
+                <div className="absolute top-4 right-4 bg-green-500 text-black text-[9px] font-bold px-2 py-1 rounded tracking-tighter">
+                  {identifiedModel.status}
+                </div>
+                <h2 className="text-xs font-mono text-cyan-400 mb-1">VEHICLE IDENTIFIED</h2>
+                <div className="text-3xl font-black uppercase italic mb-4">{identifiedModel.name}</div>
+                
+                <div className="grid grid-cols-3 gap-2">
+                  {Object.entries(identifiedModel.specs).map(([k, v]) => (
+                    <div key={k} className="bg-black/40 p-2 rounded-xl border border-white/5">
+                      <div className="text-[9px] text-slate-500 uppercase font-bold">{k}</div>
+                      <div className="text-[11px] font-mono text-white">{v}</div>
+                    </div>
+                  ))}
+                </div>
+             </div>
+
+             <div className="space-y-3">
+               <h3 className="text-[11px] font-bold uppercase text-slate-500 ml-1">Available Operations</h3>
+               <button className="w-full p-4 rounded-2xl bg-white text-black font-black uppercase italic text-sm flex items-center justify-between group">
+                  <span>Generate Mod Profile</span>
+                  <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+               </button>
+               <button className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-white font-bold uppercase text-sm flex items-center justify-between hover:bg-white/10 transition-colors">
+                  <span>Diagnostic Scan</span>
+                  <Activity size={18} />
+               </button>
+             </div>
+
+             <button 
+               onClick={() => setView('landing')}
+               className="w-full flex items-center justify-center gap-2 text-slate-500 text-xs py-4 hover:text-white transition-colors"
+             >
+               <RotateCcw size={14} /> Reset Engine
+             </button>
+          </div>
+        )}
+
+      </main>
+
+      {/* ─── FOOTER NAV ─── */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-xl border-t border-white/5 px-8 py-4 z-50">
+        <div className="max-w-md mx-auto flex justify-between items-center text-slate-500">
+          <div className="flex flex-col items-center gap-1 text-cyan-400">
+            <Zap size={20} />
+            <span className="text-[9px] font-bold uppercase">Identity</span>
+          </div>
+          <div className="flex flex-col items-center gap-1 hover:text-white cursor-pointer transition-colors">
+            <Activity size={20} />
+            <span className="text-[9px] font-bold uppercase">Tuning</span>
+          </div>
+          <div className="flex flex-col items-center gap-1 hover:text-white cursor-pointer transition-colors">
+            <Search size={20} />
+            <span className="text-[9px] font-bold uppercase">Wiki</span>
+          </div>
+          <div className="flex flex-col items-center gap-1 hover:text-white cursor-pointer transition-colors">
+            <Crown size={20} />
+            <span className="text-[9px] font-bold uppercase">Pro</span>
+          </div>
+        </div>
+      </nav>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes scan {
+          0%, 100% { top: 0; opacity: 0; }
+          50% { top: 100%; opacity: 1; }
+        }
+      `}} />
+    </div>
+  );
+};
+
+export default App;
+
+```
