@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap');
+@import "tailwindcss";
+
+/*
+ * Car Decision Assistant — design tokens
+ * Dark mode (OLED, garage/night) is the DEFAULT theme; a light theme is provided.
+ * The generated system's "action red" accent is kept; risk states use green/amber/red.
+ * Semantic color utilities (bg-surface, text-foreground, text-muted, …) resolve via
+ * the CSS variables below so `.dark` can re-theme them at runtime.
+ */
+@theme {
+  --font-sans: "Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-heading: "Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --color-background: var(--c-bg);
+  --color-surface: var(--c-surface);
+  --color-surface-2: var(--c-surface-2);
+  --color-foreground: var(--c-fg);
+  --color-muted: var(--c-muted);
+  --color-border: var(--c-border);
+  --color-primary: var(--c-primary);
+  --color-on-primary: var(--c-on-primary);
+  --color-accent: var(--c-accent);
+  --color-on-accent: var(--c-on-accent);
+  --color-ring: var(--c-ring);
+  --color-destructive: var(--c-destructive);
+  --color-success: var(--c-success);
+  --color-warning: var(--c-warning);
+  --color-danger: var(--c-danger);
+}
+
+:root {
+  --c-bg: #f4f6f9;
+  --c-surface: #ffffff;
+  --c-surface-2: #edf1f6;
+  --c-fg: #0e1726;
+  --c-muted: #45536a;
+  --c-border: #d7dee8;
+  --c-primary: #1f3a5f;
+  --c-on-primary: #ffffff;
+  --c-accent: #c1121f;
+  --c-on-accent: #ffffff;
+  --c-ring: #1f3a5f;
+  --c-destructive: #c1121f;
+  --c-success: #157a3c;
+  --c-warning: #8a5600;
+  --c-danger: #b91c1c;
+}
+
+.dark {
+  --c-bg: #0a0d12;
+  --c-surface: #141a23;
+  --c-surface-2: #1d2530;
+  --c-fg: #e8eef6;
+  --c-muted: #9aa7b9;
+  --c-border: #2a3340;
+  --c-primary: #93b3db;
+  --c-on-primary: #0a0d12;
+  --c-accent: #e5484d;
+  --c-on-accent: #ffffff;
+  --c-ring: #93b3db;
+  --c-destructive: #f87171;
+  --c-success: #4ade80;
+  --c-warning: #fbbf24;
+  --c-danger: #f87171;
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--c-border);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--c-bg);
+    color: var(--c-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--c-accent) 28%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--c-ring);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
