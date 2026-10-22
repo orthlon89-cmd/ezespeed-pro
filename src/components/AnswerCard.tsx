@@ -5,6 +5,7 @@ import {
   DollarSign,
   Fuel,
   Gauge,
+  Info,
   ListChecks,
   Package,
   Route,
@@ -130,6 +131,16 @@ export function AnswerCard({ result }: { result: DiagnosisResult }) {
 
   return (
     <div className="space-y-4">
+      {result.source === "local" && (
+        <div className="flex items-start gap-2.5 rounded-xl border border-accent/40 bg-accent/10 px-4 py-3 text-sm text-foreground">
+          <Info className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
+          <span>
+            Built-in guide based on your symptoms — general advice, not specific to
+            your exact car. Add an OpenAI key to get a tailored AI diagnosis.
+          </span>
+        </div>
+      )}
+
       <Card className="p-4 sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="flex items-center gap-2 font-heading text-lg font-bold">

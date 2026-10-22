@@ -1,42 +1,27 @@
-import { FunctionsHttpError } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
+import { buildLocalDiagnosis } from "./localDiagnosis";
 import type { DiagnosisInput, DiagnosisResult } from "./types";
 
 /**
- * Runs the diagnosis by calling the Supabase `diagnose` Edge Function, which
- * holds the OpenAI key server-side. The key is never exposed to the browser.
- *
- * The strict JSON schema and the "three-part check" system prompt live inside
- * the Edge Function itself, so they stay server-side and out of the browser
- * bundle (and can use the full strict-mode keyword subset there).
+ * Runs the diagnosis. It first tries the Supabase `diagnose` Edge Function,
+ * which holds the OpenAI key server-side (never exposed to the browser). If
+ * that isn't reachable or isn't configured yet — no key, no network, function
+ * down — it falls back to the built-in local engine so the app always returns
+ * a useful answer rather than an error.
  */
 export async function runDiagnosis(input: DiagnosisInput): Promise<DiagnosisResult> {
-  if (!supabase) {
-    throw new Error(
-      "Diagnosis isn't wired up yet — the Supabase connection is missing. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Environment settings.",
-    );
-  }
-
-  const { data, error } = await supabase.functions.invoke("diagnose", {
-    body: input,
-  });
-
-  if (error) {
-    let message = "We couldn't reach the diagnosis service. Please try again.";
-    if (error instanceof FunctionsHttpError) {
-      try {
-        const body = (await error.context.json()) as { error?: string };
-        if (body?.error) message = body.error;
-      } catch {
-        // The function returned a non-JSON body — keep the friendly default.
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.functions.invoke("diagnose", {
+        body: input,
+      });
+      if (!error && data) {
+        return { ...(data as DiagnosisResult), source: "ai" };
       }
+    } catch {
+      // The function was unreachable — fall through to the local engine.
     }
-    throw new Error(message);
   }
 
-  if (!data) {
-    throw new Error("No diagnosis came back. Please try again.");
-  }
-
-  return data as DiagnosisResult;
+  return buildLocalDiagnosis(input);
 }

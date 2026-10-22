@@ -33,6 +33,8 @@ export interface DiagnosisResult {
   requiresPhysicalInspection: boolean;
   safetyWarning: string;
   estimatedValue: EstimatedValue;
+  /** Where the answer came from: the AI Edge Function or the built-in engine. */
+  source?: "ai" | "local";
 }
 
 /** Everything the user tells us before running the diagnosis. */
